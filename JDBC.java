@@ -1,19 +1,25 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 
 
-class Student{													// public class Student with basic student details.
+class Student{
+	String name;												// public class Student with basic student details.
 	String branch_code;
 	String category;
 	String regst_no;
-	char sex;
+	String sex;
 	int region_code;											// region_code will be between 1 and 5 depending on whether the student
 	
-		Student(String branch,String categry,String rgstno,char sx,int regcode ){
+		Student(String nme,String branch,String categry,String rgstno,String sx ){
 			branch_code = branch;
 			category = categry;
 			regst_no = rgstno;
 			sex = sx;
-			region_code = regcode;
+			name = nme;
 		}
 }																//is from South,North,East,West,Central (still needs working out a little.
 
@@ -36,6 +42,45 @@ public class JDBC{												// Connection with the Database, still in testing 
 	static final String PASSWORD = "password";
 	static Stack GeneralStack = new Stack();
 	static Stack ReservedStack = new Stack();
+	static Vector GeneralStudents = new Vector();
+	static Vector ReservedStudents = new Vector();
+	
+	
+	public static void fill_students(ResultSet res, Vector genstudents,Vector resstudents){
+		
+		try {
+			if(res.getString("category").equals("GE")){
+			try{
+			genstudents.add(new Student(res.getString("name"),res.getString("branch_code"),"GE",res.getString("regst_no"),res.getString("sex")));
+			}
+			catch(SQLException e){
+				e.printStackTrace();
+			}
+			}
+			else{
+				try{
+					resstudents.add(new Student(res.getString("name"),res.getString("branch_code"),res.getString("category"),res.getString("regst_no"),res.getString("sex")));
+					}
+					catch(SQLException e){
+						e.printStackTrace();
+					}
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void assign_region_code(Student student){
+		
+		// Assign Region Code (1 -5);
+		
+	}
+	
+
+	
 	
 	
 	
@@ -51,12 +96,9 @@ public class JDBC{												// Connection with the Database, still in testing 
 			stmnt = conn.createStatement();
 			String sql = "SELECT * FROM practice ";
 			ResultSet rs = stmnt.executeQuery(sql);
-			
+																				//the query can be modified so as to set region_codes here it self, (later).
 			while(rs.next()){
-				System.out.println(rs.getString("name"));
-				System.out.println(rs.getInt("age"));
-				System.out.println(rs.getString("college"));
-				System.out.println();
+				fill_students(rs,GeneralStudents,ReservedStudents);
 			}
 			conn.close();
 			stmnt.close();
@@ -70,11 +112,26 @@ public class JDBC{												// Connection with the Database, still in testing 
 				e.printStackTrace();
 				
 			}
+		GeneralStudents.trimToSize();
+		ReservedStudents.trimToSize();
+		
+		
+		
 		
 		
 		try{
-		GeneralStack.fill_stack(student1);
-		ReservedStack.fill_stack(student2);               // This block will further go into a for loop for filling up Stacks.student1 and student2 are not initailised yet. 
+			for(Object genstudent:GeneralStudents){
+				if(genstudent instanceof Student){
+					assign_region_code((Student) genstudent);
+					GeneralStack.fill_stack((Student) genstudent);
+				}
+			}
+			for(Object resstudent:ReservedStudents){
+				if(resstudent instanceof Student){
+					assign_region_code((Student) resstudent);
+					ReservedStack.fill_stack((Student) resstudent);
+				}
+			} 
 		}
 		catch(InvalidRegionCodeException e){
 			e.printStackTrace();

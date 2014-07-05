@@ -6,12 +6,12 @@ class InvalidRegionCodeException extends Exception{
 }
 public class Stack{
 	
-	Vector reg_one_stack;
-	Vector reg_two_stack;
-	Vector reg_three_stack;
-	Vector reg_four_stack;
-	Vector reg_five_stack;
-	InvalidRegionCodeException invalidregioncodeexception;
+	static Vector reg_one_stack;
+	static Vector reg_two_stack;
+	static Vector reg_three_stack;
+	static Vector reg_four_stack;
+	static Vector reg_five_stack;
+	static InvalidRegionCodeException invalidregioncodeexception;
 	
 	public void fill_stack(Student student) throws InvalidRegionCodeException{
 		switch(student.region_code){

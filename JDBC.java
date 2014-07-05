@@ -28,10 +28,12 @@ class Room{														// public class denoting a particular room.
 	Student roomie1;
 	Student roomie2;
 	int room_no;
-	Room(int rm_no,Student rmmate1,Student rmmate2){
+	String branch_code;
+	Room(int rm_no,Student rmmate1,Student rmmate2,String brnchcde){
 		roomie1 = rmmate1;
 		roomie2 = rmmate2;
 		room_no = rm_no;
+		branch_code = brnchcde;
 	}
 }
 
@@ -131,7 +133,7 @@ public class JDBC{												// Connection with the Database, still in testing 
 					assign_region_code((Student) resstudent);
 					ReservedStack.fill_stack((Student) resstudent);
 				}
-			} 
+			}																							// This block will further go into a for loop for filling up Stacks.student1 and student2 are not initailised yet. 
 		}
 		catch(InvalidRegionCodeException e){
 			e.printStackTrace();
